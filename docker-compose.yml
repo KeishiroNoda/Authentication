@@ -1,0 +1,56 @@
+version: '3'
+services:
+  authentication_backend:
+    restart: always
+    build:
+      context: ./backend/
+      dockerfile: ./Dockerfile
+    container_name: 'authentication_backend'
+    working_dir: '/root/backend'
+    tty: true
+    ports:
+      - 8000:8000
+    volumes:
+      - $PWD/backend:/home/guest/authentication/backend
+    depends_on: 
+      - authentication_db
+    environment:
+        TZ: Asia/Tokyo
+        # FLASK_ENV: 'development'    #デバッグモードON
+        FLASK_APP: 'run.py'         #起動用アプリの設定
+    command: bash
+
+  authentication_db:
+    image: mysql:8.0
+    container_name: 'authentication_db'
+    platform: linux/x86_64 
+    restart: always
+    environment: 
+      MYSQL_DATABASE: authinfo
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - data-volume:/var/lib/mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports: 
+      - 3308:3308
+
+  authentication_frontend:
+    build:
+      context: ./frontend/
+      dockerfile: ./Dockerfile
+    container_name: 'authentication_frontend'
+    tty: true
+    volumes:
+      - $PWD/frontend:/home/guest/authentication/frontend
+    depends_on: 
+      - authentication_backend
+    command: sh
+    # command: sh -c "cd frontend && yarn start"
+    ports:
+      - 3000:3000
+      
+
+volumes:
+ data-volume:
