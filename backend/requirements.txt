@@ -7,3 +7,4 @@ alembic
 sqlalchemy_utils
 mysqlclient
 psycopg2
+tweepy
