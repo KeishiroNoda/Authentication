@@ -2,6 +2,7 @@ import axios, { CancelTokenSource, AxiosInstance, AxiosResponse } from "axios";
 import { SignInInfo, SignUpInfo } from "../types";
 
 import { useQuery, UseQueryOptions, useMutation, useQueryClient } from "react-query";
+import { read } from "fs";
 
 
 export class AuthQuery {
@@ -14,8 +15,13 @@ export class AuthQuery {
     }
 
     public readonly postSignIn = async (info: SignInInfo) => {
-        const res: AxiosResponse<boolean> = await this.api.post('/signin', info);
+        // const res: AxiosResponse<boolean> = await this.api.post('/signin', info);
+        // await this.api.post('/signin', info).then(res => {
+        //     return res.data;
+        //   })
+        const res: AxiosResponse<SignInInfo> = await this.api.post('/signin', info);
         return res.data;
+        
     };
 
     public readonly postSignUp = async (info: SignUpInfo) => {

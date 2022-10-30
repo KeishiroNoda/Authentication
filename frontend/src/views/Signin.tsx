@@ -1,19 +1,13 @@
 import React , { useContext, useEffect, useState } from 'react';
 import { useNavigate } from "react-router";
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, Snackbar, Stack } from '@mui/material';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthQuery } from "../api";
 import { SignInInfo } from "../types";
+import { useSnackbar } from "../utils/Snackbar"
 
 const query = new AuthQuery();
 
@@ -34,11 +28,17 @@ const theme = createTheme();
 
 function SignIn() {
     const navigate = useNavigate();
+    const [open, setOpen] = useState<boolean>(false);
+    const { showSnackbar } = useSnackbar()
 
     const {
         control,
         handleSubmit,
     } = useForm<SignInInfo>()
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const validationRules = {
         email: {
@@ -51,7 +51,17 @@ function SignIn() {
     }
 
     const onSubmit: SubmitHandler<SignInInfo> = (data:SignInInfo) => {
-        console.log(query.postSignIn(data));
+        query.postSignIn(data)
+            .then((response) => {
+                console.log(response)
+                setOpen(true)
+                if (response){
+                    showSnackbar('Success!', 'success')
+                }else{
+                    showSnackbar('False!', 'error')
+                }
+            })
+        // console.log(query.postSignIn(data));
     };
 
     const moveToSignUp = () => {
@@ -60,6 +70,7 @@ function SignIn() {
 
     return (
         <ThemeProvider theme={theme}>
+            <Stack spacing={2} sx={{ width: '100%' }}>
             <Container component="main" maxWidth="xs">
             <CssBaseline />
             <Box
@@ -143,6 +154,7 @@ function SignIn() {
             </Box>
             <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>
+            </Stack>
         </ThemeProvider>
     );
 }

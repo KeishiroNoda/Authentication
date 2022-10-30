@@ -1,40 +1,49 @@
 version: '3'
 services:
   authentication_backend:
-    restart: always
     build:
       context: ./backend/
       dockerfile: ./Dockerfile
     container_name: 'authentication_backend'
-    working_dir: '/root/backend'
+    working_dir: '/home/guest/authentication/backend'
     tty: true
     ports:
       - 8000:8000
     volumes:
       - $PWD/backend:/home/guest/authentication/backend
     depends_on: 
+      # authentication_db:
+      #   condition: service_healthy
+      # - waitfordb
       - authentication_db
     environment:
-        TZ: Asia/Tokyo
-        # FLASK_ENV: 'development'    #デバッグモードON
-        FLASK_APP: 'run.py'         #起動用アプリの設定
-    command: bash
+      TZ: Asia/Tokyo
+    env_file:
+      - ./.env
+    # command: bash
+    # command: bash -c "cd /home/guest/authentication/backend && alembic upgrade head"
+    command: ["./scripts/up.sh"]
+    networks:
+      - authentication-network
 
   authentication_db:
-    image: mysql:8.0
+    build:
+      context: ./db/
+      dockerfile: ./Dockerfile
     container_name: 'authentication_db'
     platform: linux/x86_64 
     restart: always
-    environment: 
-      MYSQL_DATABASE: authinfo
-      MYSQL_USER: root
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
+    tty: true
+    env_file:
+      - ./.env
     volumes:
-      - data-volume:/var/lib/mysql
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      - $PWD/db/initdb.d:/docker-entrypoint-initdb.d #初期処理のフォルダ。初回起動のみでおｋ
+      - dbdata:/var/lib/mysql #ここにデータ永続化するためのファイルが入る。
+      #  - $PWD/db/my.cnf:/etc/mysql/conf.d/my.cnf
     ports: 
       - 3308:3308
+    networks:
+      - authentication-network
 
   authentication_frontend:
     build:
@@ -47,10 +56,26 @@ services:
     depends_on: 
       - authentication_backend
     command: sh
-    # command: sh -c "cd frontend && yarn start"
     ports:
       - 3000:3000
+    networks:
+      - authentication-network
+
+  # waitfordb:
+  #     image: dadarek/wait-for-dependencies
+  #     depends_on:
+  #       - authentication_db
+  #     command: authentication_db:3308
       
 
 volumes:
- data-volume:
+ dbdata:
+
+networks:
+  default:
+    external:
+      name: bridge
+  authentication-network:
+    name: authentication-network
+    driver: bridge
+    external: true

@@ -3,3 +3,7 @@ fastapi
 uvicorn
 pymysql
 pydantic
+alembic
+sqlalchemy_utils
+mysqlclient
+psycopg2
