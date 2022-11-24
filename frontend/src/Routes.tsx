@@ -3,7 +3,8 @@ import { Routes as RouteList, Route, Navigate } from "react-router-dom";
 import {
     Top,
     SignUp,
-    SignIn 
+    SignIn,
+    SignList 
 } from "./views";
 
 const Routes: React.FC = () => {
@@ -14,6 +15,7 @@ const Routes: React.FC = () => {
             <Route path="/top" element={<Top />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
+            <Route path="/signlist" element={<SignList />} />
             <Route element={<Navigate replace to="/not-found" />} />
         </RouteList>
     );

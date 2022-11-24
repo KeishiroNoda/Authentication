@@ -20,15 +20,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.post("/signin")
 def signin(data: schemas.SignInInfo, db: Session = Depends(get_db)):
     print(data)
     return cruds.signIn_User(db=db, info=data)
+
     
 @app.post("/signup")
-def signin(data: schemas.SignUpInfo, db: Session = Depends(get_db)):
+def signup(data: schemas.SignUpInfo, db: Session = Depends(get_db)):
     print(data)
     return cruds.signUp_User(db=db, info=data)
+
+
+@app.get("/getall")
+def getall(db: Session = Depends(get_db)):
+    return cruds.get_User(db=db)
+
+
+@app.post("/delete")
+def delete(data: schemas.deleteInfo, db: Session = Depends(get_db)):
+    print(data)
+    return cruds.delete_User(db=db, info=data)
+
 
 
 if __name__ == "__main__":

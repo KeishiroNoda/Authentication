@@ -3,13 +3,18 @@ import logo from './logo.svg';
 import './App.css';
 import Routes from "./Routes";
 import { SnackbarContextProvider } from "./utils/Snackbar"
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 function App() {
 
 	return (
-		<SnackbarContextProvider>
-			<Routes />
-		</SnackbarContextProvider>
+		<QueryClientProvider client={queryClient}>
+			<SnackbarContextProvider>
+				<Routes />
+			</SnackbarContextProvider>
+		</QueryClientProvider>
 	);
 }
 

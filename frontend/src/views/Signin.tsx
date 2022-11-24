@@ -1,8 +1,7 @@
 import React , { useContext, useEffect, useState } from 'react';
 import { useNavigate } from "react-router";
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, Snackbar, Stack } from '@mui/material';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, Stack } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthQuery } from "../api";
@@ -26,19 +25,14 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-function SignIn() {
+const SignIn:React.FC = () => {
     const navigate = useNavigate();
-    const [open, setOpen] = useState<boolean>(false);
     const { showSnackbar } = useSnackbar()
 
     const {
         control,
         handleSubmit,
     } = useForm<SignInInfo>()
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     const validationRules = {
         email: {
@@ -53,19 +47,20 @@ function SignIn() {
     const onSubmit: SubmitHandler<SignInInfo> = (data:SignInInfo) => {
         query.postSignIn(data)
             .then((response) => {
-                console.log(response)
-                setOpen(true)
                 if (response){
                     showSnackbar('Success!', 'success')
                 }else{
                     showSnackbar('False!', 'error')
                 }
             })
-        // console.log(query.postSignIn(data));
     };
 
     const moveToSignUp = () => {
         navigate(`/signup`)
+    };
+
+    const moveToList = () => {
+        navigate(`/signlist`)
     };
 
     return (
@@ -147,6 +142,11 @@ function SignIn() {
                     <Grid item>
                     <Link onClick={moveToSignUp} variant="body2">
                         {"Don't have an account? Sign Up"}
+                    </Link>
+                    </Grid>
+                    <Grid item>
+                    <Link onClick={moveToList} variant="body2">
+                        {"Account list for developper"}
                     </Link>
                     </Grid>
                 </Grid>

@@ -32,7 +32,7 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-export default function SignUp() {
+const SignUp:React.FC = () => {
     const navigate = useNavigate();
 
     const {
@@ -193,3 +193,5 @@ export default function SignUp() {
         </ThemeProvider>
     );
 }
+
+export default SignUp;

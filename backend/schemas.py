@@ -9,3 +9,6 @@ class SignUpInfo(BaseModel):
     lastName: str
     email: str
     password: str
+
+class deleteInfo(BaseModel):
+    id: int

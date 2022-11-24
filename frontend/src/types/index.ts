@@ -10,3 +10,10 @@ export interface SignUpInfo {
 	password: string;
 }
 
+export interface SignAllInfo {
+	id: number;
+	firstName: string;
+	lastName: string;
+	email: string;
+	password: string;
+}
