@@ -1,9 +1,8 @@
-import React , { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, Snackbar, Stack } from '@mui/material';
+import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, Stack } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from "react-router";
 import { AuthQuery } from "../api";
 import { SignUpInfo } from "../types";
 import { useSnackbar } from "../utils/Snackbar"
@@ -27,8 +26,6 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 const SignUp:React.FC = () => {
-    const navigate = useNavigate();
-    const [open, setOpen] = useState<boolean>(false);
     const { showSnackbar } = useSnackbar()
 
     const {
@@ -58,8 +55,6 @@ const SignUp:React.FC = () => {
     const onSubmit: SubmitHandler<SignUpInfo> = (data:SignUpInfo) => {
         query.postSignUp(data)
         .then((response) => {
-            console.log(response)
-            setOpen(true)
             if (response){
                 showSnackbar('Success!', 'success')
             }else{

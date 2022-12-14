@@ -1,8 +1,8 @@
-import axios, { CancelTokenSource, AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { SignInInfo, SignUpInfo, SignAllInfo, SignInInfo2 } from "../types";
 
-import { useQuery, UseQueryOptions, useMutation, useQueryClient } from "react-query";
-import { read } from "fs";
+import { useQuery } from "react-query";
+
 
 
 export class AuthQuery {
@@ -26,17 +26,11 @@ export class AuthQuery {
 
     public readonly postSignInCase1_2 = async () => {
         const res: AxiosResponse<boolean> = await this.api.get('/signin_case1_2');
-        console.log(res.data)
         return res.data;
     };
 
-    // public readonly postSignInCase1_2 = async (info: SignInInfo, onetimePass: string) => {
-    //     const res: AxiosResponse = await this.api.post('/signin_case1_2', {...info, onetimePass:onetimePass});
-    //     return res.data;
-    // };
-
     public readonly postSignInCase2_1 = async () => {
-        const res: AxiosResponse = await this.api.post('/signin_case2_1');
+        await this.api.post('/signin_case2_1');
         return 
     };
 
@@ -46,7 +40,7 @@ export class AuthQuery {
     };
 
     public readonly killThread = async () => {
-        const res: AxiosResponse = await this.api.post('/kill_thread');
+        await this.api.post('/kill_thread');
         return 
     };
 
