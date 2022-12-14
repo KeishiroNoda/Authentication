@@ -1,13 +1,12 @@
-import React , { useContext, useEffect, useState } from 'react';
-import { useNavigate } from "react-router";
+import React from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, Snackbar, Stack } from '@mui/material';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { Avatar, Button, CssBaseline, TextField, Link, Box, Typography, Container, Stack } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthQuery } from "../api";
-import { SignInInfo } from "../types";
+import { SignInInfo2 } from "../types";
 import { useSnackbar } from "../utils/Snackbar"
+import { Sidebar } from "../components"
 
 const query = new AuthQuery();
 
@@ -24,21 +23,21 @@ function Copyright(props: any) {
   );
 }
 
+// const defaultValue = {
+//     email: "",
+// 	password: "",
+//     onetimePass: ""
+// }
+
 const theme = createTheme();
 
-function SignIn() {
-    const navigate = useNavigate();
-    const [open, setOpen] = useState<boolean>(false);
+const SignInCase2:React.FC = () => {
     const { showSnackbar } = useSnackbar()
 
     const {
         control,
         handleSubmit,
-    } = useForm<SignInInfo>()
-
-    const handleClose = () => {
-        setOpen(false);
-    };
+    } = useForm<SignInInfo2>()
 
     const validationRules = {
         email: {
@@ -50,26 +49,21 @@ function SignIn() {
         }
     }
 
-    const onSubmit: SubmitHandler<SignInInfo> = (data:SignInInfo) => {
-        query.postSignIn(data)
-            .then((response) => {
-                console.log(response)
-                setOpen(true)
-                if (response){
-                    showSnackbar('Success!', 'success')
-                }else{
-                    showSnackbar('False!', 'error')
-                }
-            })
-        // console.log(query.postSignIn(data));
+    const onSubmit: SubmitHandler<SignInInfo2> = (data:SignInInfo2) => {
+        query.postSignInCase2_2(data).then((response) => {
+            if (response){
+                showSnackbar('Success!', 'success')
+            }else{
+                showSnackbar('False!', 'error')
+            }
+        })
     };
 
-    const moveToSignUp = () => {
-        navigate(`/signup`)
-    };
+
 
     return (
         <ThemeProvider theme={theme}>
+            <Sidebar>
             <Stack spacing={2} sx={{ width: '100%' }}>
             <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -85,7 +79,7 @@ function SignIn() {
                 <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                Sign in
+                Sign in (Case 2)
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} >
                 <Controller
@@ -130,6 +124,26 @@ function SignIn() {
                         />
                     )}
                 />
+                <Controller
+                    name="onetimePass"
+                    control={control}
+                    rules={validationRules.password}
+                    render={({ field, fieldState }) => (
+                        <TextField
+                            {...field}
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="onetimePass"
+                            label="Onetime Password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            error={!!fieldState.error?.message}
+                            helperText={fieldState.error?.message}
+                        />
+                    )}
+                />
                 <Button
                     type="submit"
                     fullWidth
@@ -138,25 +152,14 @@ function SignIn() {
                 >
                     Sign In
                 </Button>
-                <Grid container>
-                    <Grid item xs>
-                    <Link href="#" variant="body2">
-                        Forgot password?
-                    </Link>
-                    </Grid>
-                    <Grid item>
-                    <Link onClick={moveToSignUp} variant="body2">
-                        {"Don't have an account? Sign Up"}
-                    </Link>
-                    </Grid>
-                </Grid>
                 </form>
             </Box>
             <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>
             </Stack>
+            </Sidebar>
         </ThemeProvider>
     );
 }
 
-export default SignIn;
+export default SignInCase2;

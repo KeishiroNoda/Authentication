@@ -8,3 +8,8 @@ sqlalchemy_utils
 mysqlclient
 psycopg2
 tweepy
+# secrets
+# string
+# threading
+# logging
+# hashlib

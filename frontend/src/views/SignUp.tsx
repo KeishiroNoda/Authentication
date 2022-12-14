@@ -1,19 +1,13 @@
-import * as React from 'react';
+import React , { useContext, useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, Snackbar, Stack } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router";
 import { AuthQuery } from "../api";
 import { SignUpInfo } from "../types";
+import { useSnackbar } from "../utils/Snackbar"
+import { Sidebar } from "../components";
 
 const query = new AuthQuery();
 
@@ -32,8 +26,10 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-export default function SignUp() {
+const SignUp:React.FC = () => {
     const navigate = useNavigate();
+    const [open, setOpen] = useState<boolean>(false);
+    const { showSnackbar } = useSnackbar()
 
     const {
         control,
@@ -43,6 +39,9 @@ export default function SignUp() {
     const validationRules = {
         email: {
             required: { value:true, message: 'emailアドレスを入力してください。'}
+        },
+        twitter: {
+            required: { value:true, message: 'Twitterアカウント名(＠を抜いた部分)を入力してください。'},
         },
         password: {
             required: { value:true, message: 'パスワードを入力してください。'},
@@ -57,15 +56,23 @@ export default function SignUp() {
     }
 
     const onSubmit: SubmitHandler<SignUpInfo> = (data:SignUpInfo) => {
-        console.log(query.postSignUp(data))
+        query.postSignUp(data)
+        .then((response) => {
+            console.log(response)
+            setOpen(true)
+            if (response){
+                showSnackbar('Success!', 'success')
+            }else{
+                showSnackbar('False!', 'error')
+            }
+        })
     };
 
-    const moveToSignIn = () => {
-        navigate(`/signin`)
-    };
 
     return (
         <ThemeProvider theme={theme}>
+            <Sidebar>
+            <Stack spacing={2} sx={{ width: '100%' }}>
             <Container component="main" maxWidth="xs">
             <CssBaseline />
             <Box
@@ -149,6 +156,29 @@ export default function SignUp() {
                     />
                     </Grid>
                     <Grid item xs={12}>
+                        <Controller
+                        name="twitter"
+                        control={control}
+                        defaultValue=""
+                        rules={validationRules.twitter}
+                        render={({ field, fieldState }) => (
+                            <TextField
+                                {...field}
+                                required
+                                fullWidth
+                                id="twitter"
+                                label="Twitter Account"
+                                type="twitter"
+                                name="twitter"
+                                autoComplete="twitter"
+                                error={!!fieldState.error?.message}
+                                helperText={fieldState.error?.message}
+                                autoFocus
+                            />
+                        )}
+                    />
+                    </Grid>
+                    <Grid item xs={12}>
                     <Controller
                         name="password"
                         control={control}
@@ -179,17 +209,14 @@ export default function SignUp() {
                 >
                     Sign Up
                 </Button>
-                <Grid container justifyContent="flex-end">
-                    <Grid item>
-                        <Link onClick={moveToSignIn} variant="body2">
-                            Already have an account? Sign in
-                        </Link>
-                    </Grid>
-                </Grid>
                 </form>
             </Box>
             <Copyright sx={{ mt: 5 }} />
             </Container>
+            </Stack>
+            </Sidebar>
         </ThemeProvider>
     );
 }
+
+export default SignUp;
