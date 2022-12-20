@@ -5,7 +5,9 @@ import schemas
 import uvicorn
 import cruds 
 from database import get_db
-from twitter import twitter_thread_case1, twitter_thread_case2, twitter_case2
+from twitter import twitter_thread_case1, twitter_thread_case2, twitter_thread_case3, twitter_case2
+
+
 
 app = FastAPI()
 
@@ -53,11 +55,6 @@ def signin_case1_2():
     else:
         result = False
     return result
-    
-    
-# @app.post("/signin_case1_2")
-# def signin_case1_2(data: schemas.Case1_2Info, db: Session = Depends(get_db)):
-#     return cruds.signIn_case1_2(db=db, info=data)
 
 
 @app.post("/signin_case2_1")
@@ -71,13 +68,29 @@ def signin_case2_1(db: Session = Depends(get_db)):
 
 
 @app.post("/signin_case2_2")
-def signin_case2_2(data: schemas.Case1_2Info, db: Session = Depends(get_db)):
+def signin_case2_2(data: schemas.Case1Info, db: Session = Depends(get_db)):
     twitter = cruds.get_twitter_from_email(db=db, email=data.email)
     if (data.onetimePass == twitter_case2(db=db, twitter=twitter)):
         return cruds.signIn_User(db=db, info=data)
     else:
         return False
     
+    
+@app.post("/signin_case3_1")
+def signin_case3_1(db: Session = Depends(get_db)):
+    global thread
+    if (thread == 0):
+        thread = twitter_thread_case3(db=db)
+        thread.start()
+        print("Thread start!")
+    return 
+
+
+@app.post("/signin_case3_2")
+def signin_case3_2(data: schemas.Case3Info, db: Session = Depends(get_db)):
+    return cruds.signIn_case3(db=db, info=data)
+
+
 @app.post("/kill_thread")
 def kill_thread():
     global thread

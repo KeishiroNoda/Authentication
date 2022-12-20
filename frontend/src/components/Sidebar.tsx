@@ -26,8 +26,15 @@ const Sidebar = ({ children }: {children: React.ReactNode}) => {
   };
 
   const moveToCase2 = () => {
+    query.killThread()
     query.postSignInCase2_1()
     navigate(`/signin_case2`)
+  };
+
+  const moveToCase3 = () => {
+    query.killThread()
+    query.postSignInCase3_1()
+    navigate(`/signin_case3`)
   };
 
   const moveToList = () => {
@@ -59,6 +66,14 @@ const Sidebar = ({ children }: {children: React.ReactNode}) => {
                 <LoginIcon />
               </ListItemIcon>
               <ListItemText primary="Sign in Case2" />
+            </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+            <ListItemButton onClick={moveToCase3}>
+              <ListItemIcon>
+                <LoginIcon />
+              </ListItemIcon>
+              <ListItemText primary="Sign in Case3" />
             </ListItemButton>
         </ListItem>
         <ListItem disablePadding>

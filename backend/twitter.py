@@ -5,6 +5,8 @@ import logging
 import time
 import cruds
 
+
+
 # Twitter APIの認証設定
 # 取得したキーを格納
 api_key = "hEvMEZVDcbZjvVCnx4v1wDifU"
@@ -82,6 +84,47 @@ class twitter_thread_case2(threading.Thread):
     def kill(self):
         self.alive = False
         self.join()
+        
+        
+class twitter_thread_case3(threading.Thread):
+    dms = []
+    interval = 60 
+    def __init__(self, db: Session):
+        threading.Thread.__init__(self)
+        self.db = db
+        self.alive = True
+        self.when = ""
+        self.where = ""
+        
+    def run(self):
+        while self.alive:
+            try:
+                dms = api.get_direct_messages()
+                self.dms = dms
+                for dm in dms:
+                    if (str(dm._json['message_create']['message_data']['text'][0:4]) == "when"):
+                        self.when = str(dm._json['message_create']['message_data']['text'][5:])
+                        api.delete_direct_message(id=dm._json['id'])
+                    elif (str(dm._json['message_create']['message_data']['text'][0:5]) == "where"):
+                        self.where = str(dm._json['message_create']['message_data']['text'][6:])
+                        api.delete_direct_message(id=dm._json['id'])
+                    if (self.when and self.where):
+                        print(self.when)
+                        print(self.where)
+                        cruds.add_context(db=self.db, twitterID=str(dm._json['message_create']['sender_id']), when=self.when, where=self.where)
+                        api.send_direct_message(recipient_id=dm._json['message_create']['sender_id'],text="accept")
+                        self.when = ""
+                        self.where = ""
+                        print("Accepted DM!")
+            except Exception as e:
+                logging.exception(e)
+
+            time.sleep(self.interval)  # sleep to wait 60 sec
+            print("60sec passed!!")
+            
+    def kill(self):
+        self.alive = False
+        self.join()
             
 
 def twitter_case1(twitterID, onetimePass):
@@ -103,3 +146,7 @@ def twitter_case2(db, twitter):
     return 0
     
     
+def get_twitterID_from_name(name):
+    users = api.search_users(q=name)
+    for user in users:
+        return int(user._json['id'])

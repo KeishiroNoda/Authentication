@@ -39,6 +39,16 @@ export class AuthQuery {
         return res.data;
     };
 
+    public readonly postSignInCase3_1 = async () => {
+        await this.api.post('/signin_case3_1');
+        return 
+    };
+
+    public readonly postSignInCase3_2 = async (info: SignInInfo, latitude:number, longitude:number) => {
+        const res: AxiosResponse<boolean> = await this.api.post('/signin_case3_2', { ...info, latitude:latitude, longitude:longitude } );
+        return res.data;
+    };
+
     public readonly killThread = async () => {
         await this.api.post('/kill_thread');
         return 

@@ -1,11 +1,14 @@
 from sqlalchemy.orm import Session
 
-from models import User, Onetimepass
-from schemas import SignInInfo, SignUpInfo, deleteInfo, Case1_2Info
+from models import User, Onetimepass, ContextInfo
+from schemas import SignInInfo, SignUpInfo, deleteInfo, Case1Info, Case3Info
+from context import get_location
 import hashlib
+import math
 import secrets
 import string
-from twitter import twitter_case1
+import datetime
+from twitter import twitter_case1, get_twitterID_from_name
 
 
 
@@ -36,12 +39,12 @@ def signIn_case1_1(db: Session, info:SignInInfo):
         return 0
     
     
-def signIn_case1_2(db: Session, info: Case1_2Info):
+def signIn_case1_2(db: Session, info: Case1Info):
     db_User = db.query(User).filter(User.email == info.email).first()
     return twitter_case1(twitterID=db_User.twitter, onetimePass=info.onetimePass)
 
 
-def signIn_case2(db: Session, info: Case1_2Info):
+def signIn_case2(db: Session, info: Case1Info):
     db_User = db.query(User).filter(User.email == info.email).first()
     if db_User:
         # if db_User.password == hashlib.sha256(info.password).hexdigest():
@@ -49,6 +52,22 @@ def signIn_case2(db: Session, info: Case1_2Info):
             return True
     else:
         return False
+    
+    
+def signIn_case3(db: Session, info: Case3Info):
+    db_User = db.query(User).filter(User.email == info.email).first()
+    if db_User:
+        # if db_User.password == hashlib.sha256(info.password).hexdigest():
+        if (db_User.password == info.password):
+            twitterID = get_twitterID_from_name(db_User.twitter)
+            db_Context = db.query(ContextInfo).filter(ContextInfo.twitterID == twitterID).first()
+            if db_Context:
+                location = get_location(db_Context.where)
+                dt_now = datetime.datetime.now()
+                if (math.floor(info.latitude) == math.floor(location["latitude"])) and (math.floor(info.longitude) == math.floor(location["longitude"])):
+                    if (dt_now.month == int(db_Context.when.split('/')[0])) and (dt_now.day == int(db_Context.when.split('/')[1])) and (dt_now.hour > (int(db_Context.when.split('/')[2].split(':')[0]) - 1)) and (dt_now.hour < (int(db_Context.when.split('/')[2].split(':')[0]) + 1)):
+                        return True
+    return False
 
 
 def signUp_User(db: Session, info: SignUpInfo):
@@ -112,4 +131,14 @@ def get_onetime(db: Session, twitterID: str):
         return onetimepassword.password
     else:
         return 0
-        
+    
+     
+def add_context(db: Session, twitterID: str, when: str, where:str):
+    twitter_check = db.query(ContextInfo).filter(ContextInfo.twitterID == twitterID).first()
+    if twitter_check:
+        db.delete(twitter_check)
+    db_ContextInfo = ContextInfo(twitterID=twitterID, when=when, where=where)
+    db.add(db_ContextInfo)
+    db.commit()
+    db.refresh(db_ContextInfo)
+    return    

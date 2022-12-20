@@ -1,7 +1,6 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
-
+from sqlalchemy import Column, Integer, String
 from database import Base
+
 
 
 class User(Base):
@@ -13,7 +12,6 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     twitter = Column(String)
     password = Column(String)
-    # is_active = Column(Boolean, default=True)
     
 
 class Onetimepass(Base):
@@ -22,3 +20,12 @@ class Onetimepass(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     twitterID = Column(String(50))
     password = Column(String(30))
+    
+    
+class ContextInfo(Base):
+    __tablename__ = "contextinfo"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    twitterID = Column(String(50))
+    when  = Column(String(50))
+    where  = Column(String(50))
