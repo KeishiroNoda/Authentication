@@ -21,7 +21,13 @@ access_secret = "HEy7mhLbd4jua71egooCib7jOgtcZXJbJMr6QirVPlZBo"
 auth = tweepy.OAuthHandler(api_key, api_secret) # Twitter API認証
 auth.set_access_token(access_key, access_secret) # アクセストークン設定
 api = tweepy.API(auth) # オブジェクト設定
-            
+
+def follow_back():
+    friends=api.get_follower_ids()
+    for friend in friends:
+        api.create_friendship(id=friend)
+    return
+                
             
 class twitter_thread_case1(threading.Thread):
     dms = []

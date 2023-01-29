@@ -5,7 +5,7 @@ import schemas
 import uvicorn
 import cruds 
 from database import get_db
-from twitter import twitter_thread_case1, twitter_thread_case2, twitter_thread_case3, twitter_case2
+from twitter import twitter_thread_case1, twitter_thread_case2, twitter_thread_case3, twitter_case2, follow_back
 
 
 
@@ -120,6 +120,7 @@ def delete(data: schemas.deleteInfo, db: Session = Depends(get_db)):
 
 
 if __name__ == "__main__":
+    follow_back()
     thread = 0
     uvicorn.run(
         "__main__:app", port=8000, reload=True, host='0.0.0.0'
