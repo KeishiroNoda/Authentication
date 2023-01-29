@@ -106,7 +106,7 @@ const SignInCase1:React.FC = () => {
                 <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                Sign in (Case 1)
+                Sign in (Case 0)
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} >
                 <Controller

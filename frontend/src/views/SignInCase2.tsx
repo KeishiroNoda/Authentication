@@ -79,7 +79,7 @@ const SignInCase2:React.FC = () => {
                 <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                Sign in (Case 2)
+                Sign in (Case 1)
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} >
                 <Controller

@@ -57,7 +57,7 @@ const Sidebar = ({ children }: {children: React.ReactNode}) => {
               <ListItemIcon>
                 <LoginIcon />
               </ListItemIcon>
-              <ListItemText primary="Sign in Case1" />
+              <ListItemText primary="Sign in Case0" />
             </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -65,7 +65,7 @@ const Sidebar = ({ children }: {children: React.ReactNode}) => {
               <ListItemIcon>
                 <LoginIcon />
               </ListItemIcon>
-              <ListItemText primary="Sign in Case2" />
+              <ListItemText primary="Sign in Case1" />
             </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -73,7 +73,7 @@ const Sidebar = ({ children }: {children: React.ReactNode}) => {
               <ListItemIcon>
                 <LoginIcon />
               </ListItemIcon>
-              <ListItemText primary="Sign in Case3" />
+              <ListItemText primary="Sign in Case2" />
             </ListItemButton>
         </ListItem>
         <ListItem disablePadding>

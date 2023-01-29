@@ -63,6 +63,7 @@ const SignInCase3:React.FC = () => {
             const { latitude, longitude } = position.coords;
             setPosition({ latitude, longitude });
             });
+            console.log(position)
             if (position === defaultPosition){
                 setOpen(true)
             }else{
@@ -90,7 +91,7 @@ const SignInCase3:React.FC = () => {
                 <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                Sign in (Case 3)
+                Sign in (Case 2)
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} >
                 <Controller
